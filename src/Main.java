@@ -72,35 +72,19 @@ public class Main {
             return;
         }
 
-        //checking for completeness
-        if (checkCompleteness(graph,alpha)){
-            printWriter.print("FSA is complete");
-        } else {
-            printWriter.print("FSA is incomplete");
-        }
-        //checking for warnings
-        String warnings = null;
-        if (checkW1(finst)){
-            warnings="\nWarning:\nW1: Accepting state is not defined";
-        }
+//        //checking for completeness
+//        if (checkCompleteness(graph,alpha)){
+//            printWriter.print("FSA is complete");
+//        } else {
+//            printWriter.print("FSA is incomplete");
+//        }
 
-        if (checkW2(graph,initst,states)){
-                if (warnings!= null && warnings.contains("Warning:"))
-                    warnings = warnings + "\nW2: Some states are not reachable from initial state";
-                else
-                    warnings = "\nWarning:\nW2: Some states are not reachable from initial state";
-
+        if (checkE6(graph)) {
+            printWriter.println("Error:");
+            printWriter.print("E6: FSA is nondeterministic");
+            printWriter.close();
+            return;
         }
-
-        if (checkW3(graph)) {
-                if (warnings!= null && warnings.contains("Warning:"))
-                    warnings = warnings + "\nW3: FSA is nondeterministic";
-                else
-                    warnings = "\nWarning:\nW3: FSA is nondeterministic";
-
-        }
-        if (warnings!=null)
-            printWriter.print(warnings);
 
         scanner.close();
         printWriter.close();
@@ -282,7 +266,7 @@ public class Main {
         return isVisited;
     }
 
-    private static boolean checkW3(String[][] graph){
+    private static boolean checkE6(String[][] graph){
         //1.I add all transitions of current state to list
         //2.If I meet duplicate, I return true(nondeterministic)
         for (int i = 0; i <graph.length ; i++) {

@@ -1,2 +1,2 @@
 Error:
-E5: Input file is malformed
+E6: FSA is nondeterministic
