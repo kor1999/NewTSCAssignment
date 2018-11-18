@@ -4,6 +4,8 @@ public class Main {
 
     static String[] states, alpha, initst, finst, trans;
     static String e3Word;
+    static int initstNumber;
+    static  int[] finstNumber;
     public static void main(String[] args)throws IOException {
         // 1.1 Putting all lines to separate arrays
         // 1.2 Checking e5
@@ -40,6 +42,7 @@ public class Main {
 
         String finstLine = scanner.nextLine();
         finst = simpleLine(finstLine);
+        finstNumber = new int[finst.length];
 
         String transLine =  scanner.nextLine();
         trans = simpleLine(transLine);
@@ -52,7 +55,7 @@ public class Main {
             printWriter.close();
             return;
         }
-        String [][] graph = createGraph(states,trans);
+        String [][] graph = createGraph(states,trans,initst,finst);
         if (checkE2(graph)){
             printWriter.println("Error:");
             printWriter.print("E2: Some states are disjoint");
@@ -85,7 +88,7 @@ public class Main {
             printWriter.close();
             return;
         }
-
+        //kleeneAlgAllSteps(graph,initst,finst);
         scanner.close();
         printWriter.close();
     }
@@ -284,7 +287,7 @@ public class Main {
         return false;
     }
 
-    private static String[][] createGraph(String[] states,String[] trans){
+    private static String[][] createGraph(String[] states,String[] trans,String[] initst, String[] finst){
         //1.Im creating square matrix of size of states
         //Each row are state, and each column are state where you go from state in row
         //Elements in matrix are transitions
@@ -293,11 +296,27 @@ public class Main {
         String[][] graph = new String[states.length][states.length];
         for (int i = 0; i <trans.length ; i++) {
             String[] tmp =parseTrans(trans[i]);
+            if (trans[i].substring(0,trans[i].indexOf(">")).equals(initst[0])){
+                initstNumber = Integer.parseInt(tmp[0]);
+            }
+            int tempInt =0;
+            for (int j = 0; j <finst.length ; j++) {
+                if (trans[i].substring(0,trans[i].indexOf(">")).equals(finst[j])){
+                    finstNumber[tempInt] = Integer.parseInt(tmp[0]);
+                    tempInt++;
+                }
+            }
             if(graph[Integer.parseInt(tmp[0])][Integer.parseInt(tmp[2])]==null) {
                 graph[Integer.parseInt(tmp[0])][Integer.parseInt(tmp[2])] = tmp[1];
             } else
                 graph[Integer.parseInt(tmp[0])][Integer.parseInt(tmp[2])] = graph[Integer.parseInt(tmp[0])][Integer.parseInt(tmp[2])]+" "+ tmp[1];
         }
+        /*for (int i = 0; i <graph.length ; i++) {
+            for (int j = 0; j <graph.length ; j++) {
+                System.out.print(graph[i][j]+" ");
+            }
+            System.out.println("-");
+        }*/
         return graph;
     }
 
@@ -352,5 +371,48 @@ public class Main {
             }
         }
         return false;
+    }
+
+//    private static String kleeneAlgAllSteps(String[][] graph){
+//        String[][] rGraph = kleeneAlgStep0(graph);
+//        for (int i = 0; i <graph.length ; i++) {
+//            for (int j = 0; j <graph.length ; j++) {
+//
+//            }
+//        }
+//
+//    }
+
+    private static String[][] kleeneAlgStep0(String[][] graph){
+        String[][] rGraph = new String[graph.length][graph.length];
+        for (int i = 0; i < graph.length ; i++) {
+            for (int j = 0; j < graph.length ; j++) {
+                rGraph[i][j] = parseTransFromGraph(graph[i][j]);
+                if (i==j){
+                    if (rGraph[i][j]!="")
+                        rGraph[i][j]=rGraph[i][j] + " | eps";
+                    else
+                        rGraph[i][j]=rGraph[i][j] + "eps";
+                }else if (rGraph[i][j]==""){
+                    rGraph[i][j]=rGraph[i][j] + "{}";
+                }
+
+                System.out.print("["+i+"]"+"["+j+"]"+rGraph[i][j]+" ");
+            }
+            System.out.println("");
+        }
+        return rGraph;
+    }
+    private static String parseTransFromGraph(String str){
+        if(str!=null) {
+            String[] tempArr = str.split(" ");
+            String returnStr = tempArr[0];
+            for (int i = 1; i < tempArr.length; i++) {
+                returnStr = returnStr + " | " + tempArr[i];
+            }
+            return returnStr;
+        } else
+            return "";
+
     }
 }
