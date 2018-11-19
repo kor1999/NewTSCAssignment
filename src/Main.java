@@ -95,15 +95,9 @@ public class Main {
             return;
         }
 
-        String[] regExpArr = kleeneAlgAllSteps(graph);
+        String regExp = kleeneAlgAllSteps(graph);
+        printWriter.print(regExp);
 
-        for (int i = 0; i <regExpArr.length ; i++) {
-            if (i+1==regExpArr.length){
-                printWriter.print(regExpArr[i]);
-            }else {
-                printWriter.println(regExpArr[i]);
-            }
-        }
         scanner.close();
         printWriter.close();
     }
@@ -391,7 +385,7 @@ public class Main {
         return false;
     }
 
-    private static String[] kleeneAlgAllSteps(String[][] graph){
+    private static String kleeneAlgAllSteps(String[][] graph){
         //1. Create first step in kleeneAlgStep0 method
         //2. Making arr that will be current step
         //3. rGraph will be like previous step
@@ -400,7 +394,7 @@ public class Main {
         String[][] rGraph = kleeneAlgStep0(graph);
         for (int k = 0; k <rGraph.length ; k++) {
             String[][] tempRgraph = new String[rGraph.length][rGraph.length];
-            System.out.println(k+":");
+            //System.out.println(k+":");
             for (int i = 0; i <rGraph.length ; i++) {
                 for (int j = 0; j <rGraph.length ; j++) {
                     tempRgraph[i][j] = "("+rGraph[i][k]+")("+rGraph[k][k]+")*("+rGraph[k][j]+")|("+rGraph[i][j]+")";
@@ -409,16 +403,20 @@ public class Main {
             System.arraycopy(tempRgraph,0,rGraph,0,tempRgraph.length);
         }
 
-        String[] returnArr = new String[finstNumber.length];
-        for (int i = 0; i <finstNumber.length ; i++) {
-            returnArr[i] = rGraph[initstNumber][finstNumber[i]];
+        String returnStr = "";
+        for(int i = finstNumber.length-1; i >= 0; i--){
+            if (i==finstNumber.length-1){
+                returnStr=rGraph[initstNumber][finstNumber[i]];
+            } else{
+                returnStr=returnStr+"|"+rGraph[initstNumber][finstNumber[i]];
+            }
         }
-        return returnArr;
+        return returnStr;
     }
 
     private static String[][] kleeneAlgStep0(String[][] graph){
         String[][] rGraph = new String[graph.length][graph.length];
-        System.out.println("-1:");
+        //System.out.println("-1:");
         for (int i = 0; i < graph.length ; i++) {
             for (int j = 0; j < graph.length ; j++) {
                 rGraph[i][j] = parseTransFromGraph(graph[i][j]);
@@ -431,7 +429,7 @@ public class Main {
                     rGraph[i][j]=rGraph[i][j] + "{}";
                 }
 
-                System.out.println("["+i+"]"+"["+j+"]"+rGraph[i][j]+" ");
+                //System.out.println("["+i+"]"+"["+j+"]"+rGraph[i][j]+" ");
             }
         }
         return rGraph;
