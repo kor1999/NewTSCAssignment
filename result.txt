@@ -1,1 +1,1 @@
-{}
+(a|eps)(a|eps)*(a|eps)|(a|eps)

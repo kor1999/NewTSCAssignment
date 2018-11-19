@@ -56,11 +56,7 @@ public class Main {
             printWriter.close();
             return;
         }
-        if (finst[0].equals("")&&finst.length==1){
-            printWriter.print("{}");
-            printWriter.close();
-            return;
-        }
+
         String [][] graph = createGraph(states,trans,initst,finst);
         if (checkE2(graph)){
             printWriter.println("Error:");
@@ -94,10 +90,20 @@ public class Main {
             printWriter.close();
             return;
         }
+        if (finst[0].equals("")&&finst.length==1){
+            printWriter.print("{}");
+            printWriter.close();
+            return;
+        }
+
         String[] regExpArr = kleeneAlgAllSteps(graph);
 
         for (int i = 0; i <regExpArr.length ; i++) {
-            printWriter.println(regExpArr[i]);
+            if (i+1==regExpArr.length){
+                printWriter.print(regExpArr[i]);
+            }else {
+                printWriter.println(regExpArr[i]);
+            }
         }
         //kleeneAlgStep0(graph);
         scanner.close();
@@ -287,10 +293,13 @@ public class Main {
             ArrayList<String> arr = new ArrayList();
             for (int j = 0; j <graph.length ; j++) {
                 if (graph[i][j]!=null){
-                    if (arr.contains(graph[i][j])){
-                        return true;
-                    } else{
-                        arr.add(graph[i][j]);
+                    String[] tempArr = graph[i][j].split(" ");
+                    for (int k = 0; k <tempArr.length; k++) {
+                        if (arr.contains(tempArr[k])) {
+                            return true;
+                        } else {
+                            arr.add(tempArr[k]);
+                        }
                     }
                 }
             }
