@@ -13,8 +13,7 @@ public class Main {
         // 2. Checking e1
         // 3. Creating graph by matrix
         // 4. Checking e2,e3,e4
-        // 5. Checking completeness
-        // 6. Checking dor warnings
+        // 5. Create Regular expressions with Kleene Alg.
         Scanner scanner = new Scanner(new File("fsa.txt"));
         PrintWriter printWriter = new PrintWriter(new File("result.txt"));
 
@@ -105,7 +104,6 @@ public class Main {
                 printWriter.println(regExpArr[i]);
             }
         }
-        //kleeneAlgStep0(graph);
         scanner.close();
         printWriter.close();
     }
@@ -394,17 +392,18 @@ public class Main {
     }
 
     private static String[] kleeneAlgAllSteps(String[][] graph){
+        //1. Create first step in kleeneAlgStep0 method
+        //2. Making arr that will be current step
+        //3. rGraph will be like previous step
+        //4. Write reg. exp.
+        //5. Return reg. exp. from init.st. to final st.
         String[][] rGraph = kleeneAlgStep0(graph);
         for (int k = 0; k <rGraph.length ; k++) {
             String[][] tempRgraph = new String[rGraph.length][rGraph.length];
-            //System.arraycopy(rGraph,0,tempRgraph,0,rGraph.length);
-            //tempRgraph = rGraph.clone();
             System.out.println(k+":");
             for (int i = 0; i <rGraph.length ; i++) {
                 for (int j = 0; j <rGraph.length ; j++) {
                     tempRgraph[i][j] = "("+rGraph[i][k]+")("+rGraph[k][k]+")*("+rGraph[k][j]+")|("+rGraph[i][j]+")";
-                    //System.out.println("["+i+"]"+"["+j+"]"+rGraph[i][j]+" ");
-                    System.out.println("["+i+"]"+"["+j+"]"+tempRgraph[i][j]+" ");
                 }
             }
             System.arraycopy(tempRgraph,0,rGraph,0,tempRgraph.length);
