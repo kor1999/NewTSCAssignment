@@ -1,5 +1,5 @@
-states={on,off,idle}
+states={on,off}
 alpha={turn_on,turn_off}
 init.st={off}
-fin.st={on}
-trans={off>turn_on>on,on>turn_off>off,on>turn_on>on,off>turn_off>on,idle>turn_on>on,idle>turn_off>off}
+fin.st={}
+trans={off>turn_on>on,on>turn_off>off}

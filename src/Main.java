@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 public class Main {
 
@@ -55,6 +56,11 @@ public class Main {
             printWriter.close();
             return;
         }
+        if (finst[0].equals("")&&finst.length==1){
+            printWriter.print("{}");
+            printWriter.close();
+            return;
+        }
         String [][] graph = createGraph(states,trans,initst,finst);
         if (checkE2(graph)){
             printWriter.println("Error:");
@@ -88,7 +94,12 @@ public class Main {
             printWriter.close();
             return;
         }
-        //kleeneAlgAllSteps(graph,initst,finst);
+        String[] regExpArr = kleeneAlgAllSteps(graph);
+
+        for (int i = 0; i <regExpArr.length ; i++) {
+            printWriter.println(regExpArr[i]);
+        }
+        //kleeneAlgStep0(graph);
         scanner.close();
         printWriter.close();
     }
@@ -373,33 +384,47 @@ public class Main {
         return false;
     }
 
-//    private static String kleeneAlgAllSteps(String[][] graph){
-//        String[][] rGraph = kleeneAlgStep0(graph);
-//        for (int i = 0; i <graph.length ; i++) {
-//            for (int j = 0; j <graph.length ; j++) {
-//
-//            }
-//        }
-//
-//    }
+    private static String[] kleeneAlgAllSteps(String[][] graph){
+        String[][] rGraph = kleeneAlgStep0(graph);
+        for (int k = 0; k <rGraph.length ; k++) {
+            String[][] tempRgraph = new String[rGraph.length][rGraph.length];
+            //System.arraycopy(rGraph,0,tempRgraph,0,rGraph.length);
+            //tempRgraph = rGraph.clone();
+            System.out.println(k+":");
+            for (int i = 0; i <rGraph.length ; i++) {
+                for (int j = 0; j <rGraph.length ; j++) {
+                    tempRgraph[i][j] = "("+rGraph[i][k]+")("+rGraph[k][k]+")*("+rGraph[k][j]+")|("+rGraph[i][j]+")";
+                    //System.out.println("["+i+"]"+"["+j+"]"+rGraph[i][j]+" ");
+                    System.out.println("["+i+"]"+"["+j+"]"+tempRgraph[i][j]+" ");
+                }
+            }
+            System.arraycopy(tempRgraph,0,rGraph,0,tempRgraph.length);
+        }
+
+        String[] returnArr = new String[finstNumber.length];
+        for (int i = 0; i <finstNumber.length ; i++) {
+            returnArr[i] = rGraph[initstNumber][finstNumber[i]];
+        }
+        return returnArr;
+    }
 
     private static String[][] kleeneAlgStep0(String[][] graph){
         String[][] rGraph = new String[graph.length][graph.length];
+        System.out.println("-1:");
         for (int i = 0; i < graph.length ; i++) {
             for (int j = 0; j < graph.length ; j++) {
                 rGraph[i][j] = parseTransFromGraph(graph[i][j]);
                 if (i==j){
                     if (rGraph[i][j]!="")
-                        rGraph[i][j]=rGraph[i][j] + " | eps";
+                        rGraph[i][j]=rGraph[i][j] + "|eps";
                     else
                         rGraph[i][j]=rGraph[i][j] + "eps";
                 }else if (rGraph[i][j]==""){
                     rGraph[i][j]=rGraph[i][j] + "{}";
                 }
 
-                System.out.print("["+i+"]"+"["+j+"]"+rGraph[i][j]+" ");
+                System.out.println("["+i+"]"+"["+j+"]"+rGraph[i][j]+" ");
             }
-            System.out.println("");
         }
         return rGraph;
     }
@@ -408,7 +433,7 @@ public class Main {
             String[] tempArr = str.split(" ");
             String returnStr = tempArr[0];
             for (int i = 1; i < tempArr.length; i++) {
-                returnStr = returnStr + " | " + tempArr[i];
+                returnStr = returnStr + "|" + tempArr[i];
             }
             return returnStr;
         } else
